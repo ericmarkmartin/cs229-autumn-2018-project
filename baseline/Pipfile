@@ -9,9 +9,10 @@ gensim = "*"
 
 [dev-packages]
 jupyter = "*"
-"flake8" = "*"
 pytest = "*"
 click = "*"
+paver = "*"
+requests = "*"
 
 [requires]
 python_version = "3.6"
