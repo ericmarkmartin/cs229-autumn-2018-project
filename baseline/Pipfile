@@ -11,6 +11,7 @@ gensim = "*"
 jupyter = "*"
 "flake8" = "*"
 pytest = "*"
+click = "*"
 
 [requires]
 python_version = "3.6"
