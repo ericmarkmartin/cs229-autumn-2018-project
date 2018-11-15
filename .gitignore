@@ -104,5 +104,8 @@ venv.bak/
 .mypy_cache/
 
 # ignore data
-data/*/*
+data/**/*
 !data/*/.gitkeep
+
+# ignore DS_Store files
+*.DS_Store
