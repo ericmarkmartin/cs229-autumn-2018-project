@@ -1,4 +1,5 @@
-import copy
+import random
+import numpy as np
 
 DICTIONARY = "data/raw/20k.txt"
 MOVIES_POS = "data/raw/rt-polaritydata/rt-polarity.pos"
@@ -28,25 +29,35 @@ def load_movies_as_raw_list():
 			data.append((line[0:-1], 1))
 	with open(MOVIES_NEG) as f:
 		for line in f:
-			data.append((line[0:-1], 1))
+			data.append((line[0:-1], 0))
 	return data
 
 # Converts a raw list of tuples from from setences to labels to a 
 # list of binary vectors to label
 def raw_list_to_binary(raw_list, word_to_index):
-	data = []
-
-	i = 0
-	for sentence, label in raw_list:
-		print(i)
-		i += 1
-		sentence_vector = [0 for i in range(len(word_to_index))]
-		for word in sentence.split():
+	X = np.empty((len(raw_list), len(word_to_index)), dtype=int)
+	y = np.empty((len(raw_list), 1), dtype=int)
+	for i, line in enumerate(raw_list):
+		X[i] = np.zeros((len(word_to_index)))
+		for word in line[0].split():
 			if word in word_to_index:
-				sentence_vector[word_to_index[word]] = 1
-		data.append((sentence_vector, label))
-	return data
+				X[i][word_to_index[word]] = 1
+		y[i] = line[1]
+	return X, y
 
-word_to_index, index_to_word = read_dict()
-raw_list = load_movies_as_raw_list()
-raw_list_to_binary(raw_list, word_to_index)
+def get_binary():
+	word_to_index, index_to_word = read_dict()
+	raw_list = load_movies_as_raw_list()
+	X, y = raw_list_to_binary(raw_list, word_to_index)
+	return X, y
+
+# Don't use
+# def data_split(data, train_p, dev_p, test_p):
+# 	size = len(data)
+
+# 	random.seed(229)
+# 	random.shuffle(data)
+# 	train_size = int(train_p * size)
+# 	dev_size = int(dev_p * size)
+# 	test_size = size - train_size - dev_size
+# 	return data[:train_size], data[train_size:train_size + dev_size], data[train_size + dev_size:]

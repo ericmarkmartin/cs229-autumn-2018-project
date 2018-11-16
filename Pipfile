@@ -9,6 +9,7 @@ gensim = "*"
 opencv-python = "*"
 keras = "*"
 pandas = "*"
+sklearn = "*"
 
 [dev-packages]
 jupyter = "*"
