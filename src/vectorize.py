@@ -13,7 +13,8 @@ TOKEN_COUNT = 20000 + 5
 PERIOD = 0
 QMARK = 1
 EXPOINT = 2
-PUNCT = {'.':PERIOD, '?':QMARK, '!':EXPOINT}
+
+NUM_CLASSES = 3
 
 STOP_WORDS = ["a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "has", "he", "in", "is", "it", "its", "of", "on", "that", "the", "to", "was", "were", "will", "with"]
 
@@ -30,7 +31,7 @@ def tokens_to_bag_of_words(filename, one_hot_y=True):
 
     X = np.empty((len(lines), TOKEN_COUNT), dtype = int)
     if one_hot_y:
-        y = np.empty((len(lines), len(PUNCT)), dtype=int)   
+        y = np.empty((len(lines), NUM_CLASSES), dtype=int)   
     else:
         y = np.empty((len(lines), 1), dtype=int)
 
@@ -40,9 +41,8 @@ def tokens_to_bag_of_words(filename, one_hot_y=True):
         for token in tokens:
             X[i][int(token)] += 1
 
-        punct = PUNCT[punct]
         if one_hot_y:
-            y[i] = np.zeros((len(PUNCT)))
+            y[i] = np.zeros((NUM_CLASSES))
             y[i][punct] = 1
         else:
             y[i] = punct
@@ -79,7 +79,7 @@ def tokens_to_one_hot(filename, max_length, one_hot_y=True):
 
     X = np.zeros((len(lines), max_length, TOKEN_COUNT), dtype=int)
     if one_hot_y:
-        y = np.empty((len(lines), len(PUNCT)), dtype=int)   
+        y = np.empty((len(lines), NUM_CLASSES), dtype=int)   
     else:
         y = np.empty((len(lines), 1), dtype=int)
 
@@ -95,9 +95,8 @@ def tokens_to_one_hot(filename, max_length, one_hot_y=True):
                 max_out += 1
                 break
 
-        punct = PUNCT[punct]
         if one_hot_y:
-            y[i] = np.zeros((len(PUNCT)))
+            y[i] = np.zeros((NUM_CLASSES))
             y[i][punct] = 1
         else:
             y[i] = punct

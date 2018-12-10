@@ -3,6 +3,12 @@ import click
 DICTIONARY = "data/external/20k.txt"
 NUMBERS = set("0123456789")
 
+PERIOD = 0
+QMARK = 1
+EXPOINT = 2
+
+PUNCT = {'.': PERIOD, '?': QMARK, '!': EXPOINT}
+
 def read_dict(dictionary):
     word_to_index = {}
     index_to_word = {}
@@ -44,6 +50,7 @@ def tokenize_file(filename, dictionary):
     for line in lines:
         sentence, punctuation = eval(line)
         new_sentence = []
+        new_punctuation = PUNCT[punctuation]
         first = True
         for word in sentence:
             token = tokenize(
@@ -60,7 +67,7 @@ def tokenize_file(filename, dictionary):
                 token = UNKNOWN
             new_sentence.append(token)
             first = False
-        tokenized_sentences.append((new_sentence, punctuation))
+        tokenized_sentences.append((new_sentence, new_punctuation))
 
     file.close()
     return tokenized_sentences
