@@ -1,12 +1,27 @@
-import copy
+import click
 
 DICTIONARY = "data/raw/20k.txt"
-MOVIES_POS = "data/raw/rt-polaritydata/rt-polarity.pos"
-MOVIES_NEG = "data/raw/rt-polaritydata/rt-polarity.neg"
+NUMBERS = set("0123456789")
 
-# Generates a word_to_index and index_to_word dictionary based
-# on a text file of words. Does not generate UNK token or filter
-# still words. 
+word_to_index, index_to_word = read_dict()
+standard_count = len(word_to_index)
+NUMBER = standard_count
+COMMA = standard_count + 1
+SEMICOLON = standard_count + 2
+UNKNOWN = standard_count + 3
+PROPER = standard_count + 4
+
+@click.command()
+@click.argument("FILE_IN", type=click.Path())
+@click.argument("FILE_OUT", type=click.Path())
+def run(FILE_IN, FILE_OUT):
+	tokenized_sentences = tokenize(FILE_IN)
+	out_file = open(FILE_OUT, "w")
+
+	for sentence in tokenized_sentences:
+		out_file.write(sentence)
+
+
 def read_dict():
 	word_to_index = {}
 	index_to_word = {}
@@ -19,34 +34,39 @@ def read_dict():
 			index += 1
 	return word_to_index, index_to_word
 
-# Loads the movies dataset into a list of tuples from sentences
-# to label (+1 for positive, 0 for negative)
-def load_movies_as_raw_list():
-	data = []
-	with open(MOVIES_POS) as f:
-		for line in f:
-			data.append((line[0:-1], 1))
-	with open(MOVIES_NEG) as f:
-		for line in f:
-			data.append((line[0:-1], 1))
-	return data
+def tokenize(word):
+	if word.lower() in word_to_index:
+		return word_to_index[word.lower()]
+	if any((c in NUMBERS) for c in word):
+		return NUMBER
+	if word == ",":
+		return COMMA
+	if word == ";":
+		return SEMICOLON
+	if word[0].isupper():
+		return PROPER
+	return UNKNOWN
 
-# Converts a raw list of tuples from from setences to labels to a 
-# list of binary vectors to label
-def raw_list_to_binary(raw_list, word_to_index):
-	data = []
+def tokenize_file(filename):
+	file = open(filename, "r")
+	lines = file.readlines()
+	tokenized_sentences = []
 
-	i = 0
-	for sentence, label in raw_list:
-		print(i)
-		i += 1
-		sentence_vector = [0 for i in range(len(word_to_index))]
-		for word in sentence.split():
-			if word in word_to_index:
-				sentence_vector[word_to_index[word]] = 1
-		data.append((sentence_vector, label))
-	return data
+	lines = lines[500:510]
+	lines.append("(['This', 'is', '20000', 'Xjakfhasjfs', 'xhrfhasjhf', ';'], '?')")
 
-word_to_index, index_to_word = read_dict()
-raw_list = load_movies_as_raw_list()
-raw_list_to_binary(raw_list, word_to_index)
+	for line in lines:
+		sentence, punctuation = eval(line)
+		new_sentence = []
+		first = True
+		for word in sentence:
+			token = tokenize(word)
+			if first and token == PROPER:
+				token = UNKNOWN
+			new_sentence.append(token)
+			first = False
+		tokenized_sentences.append((new_sentence, punctuation))
+
+	file.close()
+	return tokenized_sentences
+
