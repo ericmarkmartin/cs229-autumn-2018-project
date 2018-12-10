@@ -3,14 +3,6 @@ import click
 DICTIONARY = "data/raw/20k.txt"
 NUMBERS = set("0123456789")
 
-word_to_index, index_to_word = read_dict()
-standard_count = len(word_to_index)
-NUMBER = standard_count
-COMMA = standard_count + 1
-SEMICOLON = standard_count + 2
-UNKNOWN = standard_count + 3
-PROPER = standard_count + 4
-
 def read_dict():
 	word_to_index = {}
 	index_to_word = {}
@@ -57,7 +49,15 @@ def tokenize_file(filename):
 		tokenized_sentences.append((new_sentence, punctuation))
 
 	file.close()
-	return tokenized_sentences
+	return tokenized_sentences	
+
+word_to_index, index_to_word = read_dict()
+standard_count = len(word_to_index)
+NUMBER = standard_count
+COMMA = standard_count + 1
+SEMICOLON = standard_count + 2
+UNKNOWN = standard_count + 3
+PROPER = standard_count + 4
 
 @click.command()
 @click.argument("FILE_IN", type=click.Path())
