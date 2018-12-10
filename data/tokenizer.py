@@ -33,9 +33,6 @@ def tokenize_file(filename):
 	lines = file.readlines()
 	tokenized_sentences = []
 
-	lines = lines[500:510]
-	lines.append("(['This', 'is', '20000', 'Xjakfhasjfs', 'xhrfhasjhf', ';'], '?')")
-
 	for line in lines:
 		sentence, punctuation = eval(line)
 		new_sentence = []
@@ -49,7 +46,8 @@ def tokenize_file(filename):
 		tokenized_sentences.append((new_sentence, punctuation))
 
 	file.close()
-	return tokenized_sentences	
+	return tokenized_sentences
+
 
 word_to_index, index_to_word = read_dict()
 standard_count = len(word_to_index)
@@ -59,12 +57,16 @@ SEMICOLON = standard_count + 2
 UNKNOWN = standard_count + 3
 PROPER = standard_count + 4
 
-@click.command()
-@click.argument("FILE_IN", type=click.Path())
-@click.argument("FILE_OUT", type=click.Path())
-def run(FILE_IN, FILE_OUT):
-	tokenized_sentences = tokenize(FILE_IN)
-	out_file = open(FILE_OUT, "w")
 
-	for sentence in tokenized_sentences:
-		out_file.write(sentence)
+@click.command()
+@click.argument("filename", type=click.Path())
+@click.argument("output", type=click.Path())
+def process_file(filename, output):
+    tokenized_sentences = tokenize_file(filename)
+    with open(output, 'w') as out_file:
+        for sentence in tokenized_sentences:
+            out_file.write(str(sentence) + '\n')
+
+
+if __name__ == '__main__':
+    process_file()

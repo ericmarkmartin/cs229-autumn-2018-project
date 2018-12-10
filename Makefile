@@ -6,8 +6,7 @@ SHERLOCK_URL = "http://www.gutenberg.org/cache/epub/1661/pg1661.txt"
 all: data/raw/sherlock.txt
 
 clean:
-	rm -f data/raw/*.csv
-	rm -f data/raw/*.txt
+	rm "data/raw/sherlock.txt"
 
 data/raw/sherlock.txt:
 	python data/download.py $(SHERLOCK_URL) $@

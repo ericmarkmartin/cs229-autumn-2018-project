@@ -103,3 +103,7 @@ def process_file(filename, output):
     with open(output, 'w') as file:
         for sentence in sentences:
             file.write(str(sentence) + '\n')
+
+
+if __name__ == '__main__':
+    process_file()
