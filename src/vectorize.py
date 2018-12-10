@@ -63,7 +63,9 @@ def tokens_to_binary(filename, one_hot_y=True):
         X[i] = np.where(X[i] > 0, 1, 0)
     return X, y
 
-def tokens_to_one_hot(filename, one_hot_y=True):
+def tokens_to_one_hot(filename, max_length, one_hot_y=True):
+    # Memory error
+    raise NotImplementedError
     """
     m is number of examples
     n is number of token
@@ -72,8 +74,38 @@ def tokens_to_one_hot(filename, one_hot_y=True):
     one_hot_y=False: returns X, y as (m, q, n) and (m, 1) numpy arrays of ints
     one_hot_y=True: returns X, y as (m, q, n) and (m, 3) numpy array of ints
     """
-    pass
+    file = open(filename, "r")
+    lines = file.readlines()
 
+    X = np.zeros((len(lines), max_length, TOKEN_COUNT), dtype=int)
+    if one_hot_y:
+        y = np.empty((len(lines), len(PUNCT)), dtype=int)   
+    else:
+        y = np.empty((len(lines), 1), dtype=int)
+
+    max_out = 0
+    max_len = 0
+    for i, line in enumerate(lines):
+        tokens, punct = eval(line)
+        if len(tokens) > max_len:
+            max_len = len(tokens)
+        for j, token in enumerate(tokens):
+            X[i][j][int(token)] = 1
+            if j == max_length - 1:
+                max_out += 1
+                break
+
+        punct = PUNCT[punct]
+        if one_hot_y:
+            y[i] = np.zeros((len(PUNCT)))
+            y[i][punct] = 1
+        else:
+            y[i] = punct
+
+    print(max_out)
+    print(max_len)
+    file.close()
+    return X, y
 
 def train_dev_test_split(X, y, dev_size, test_size, random_state=229):
     """
@@ -86,22 +118,9 @@ def train_dev_test_split(X, y, dev_size, test_size, random_state=229):
     """
     if random_state is None:
         random_state = random.randint(low = -10000, high = 10000)
-    X_train, X_rem, y_train, y_rem = train_test_split(X, y, test_size=test_size+dev_size, random_state=random_state)
-    X_dev, X_test, y_dev, y_test = train_test_split(X_rem, y_rem, test_size=test_size/(test_size+dev_size), random_state=random_state)
+    t1_size = dev_size + test_size
+    t2_size = test_size / (test_size + dev_size)
+    X_train, X_rem, y_train, y_rem = train_test_split(X, y, test_size = t1_size, random_state=random_state)
+    X_dev, X_test, y_dev, y_test = train_test_split(X_rem, y_rem, test_size = t2_size, random_state=random_state)
 
     return (X_train, y_train), (X_dev, y_dev), (X_test, y_test)
-
-
-X, y = tokens_to_binary("data/processed/sherlock_tok.txt", one_hot_y=True)
-print(X.shape)
-print(y.shape)
-train, dev, test = train_dev_test_split(X, y, dev_size=0.2, test_size=0.1)
-print(train[0].shape)
-print(train[1].shape)
-print(dev[0].shape)
-print(dev[1].shape)
-print(test[0].shape)
-print(test[1].shape)
-
-print(train[0][50:60])
-print(train[1][50:60])
