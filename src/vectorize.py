@@ -7,6 +7,9 @@
 from sklearn.model_selection import train_test_split
 import numpy as np
 import random
+import warnings
+
+RANDOM_STATE = 229
 
 TOKEN_COUNT = 20000 + 5
 
@@ -106,7 +109,7 @@ def tokens_to_one_hot(filename, max_length, one_hot_y=True):
     file.close()
     return X, y
 
-def train_dev_test_split(X, y, dev_size, test_size, random_state=229):
+def train_dev_test_split(X, y, dev_size, test_size, random_state=RANDOM_STATE):
     """
     1 - dev_size - test_size of the data will be training data
     dev_size of the data will be dev data
@@ -115,6 +118,8 @@ def train_dev_test_split(X, y, dev_size, test_size, random_state=229):
     Returns 3 tuples each containing two numpy arrays (X and y) 
     X and y will vary in shape depending on vectorization but should both have matching first index (ex count) sizes
     """
+    if random_state != RANDOM_STATE:
+        warnings.warn('Overriding random state')
     if random_state is None:
         random_state = random.randint(low = -10000, high = 10000)
     t1_size = dev_size + test_size
