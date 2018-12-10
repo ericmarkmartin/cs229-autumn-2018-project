@@ -11,3 +11,4 @@ clean:
 
 data/raw/sherlock.txt:
 	python data/download.py $(SHERLOCK_URL) $@
+	python data/process.py $@ "data/processed/sherlock.txt"
