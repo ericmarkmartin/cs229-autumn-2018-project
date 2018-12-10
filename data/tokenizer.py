@@ -11,17 +11,6 @@ SEMICOLON = standard_count + 2
 UNKNOWN = standard_count + 3
 PROPER = standard_count + 4
 
-@click.command()
-@click.argument("FILE_IN", type=click.Path())
-@click.argument("FILE_OUT", type=click.Path())
-def run(FILE_IN, FILE_OUT):
-	tokenized_sentences = tokenize(FILE_IN)
-	out_file = open(FILE_OUT, "w")
-
-	for sentence in tokenized_sentences:
-		out_file.write(sentence)
-
-
 def read_dict():
 	word_to_index = {}
 	index_to_word = {}
@@ -70,3 +59,12 @@ def tokenize_file(filename):
 	file.close()
 	return tokenized_sentences
 
+@click.command()
+@click.argument("FILE_IN", type=click.Path())
+@click.argument("FILE_OUT", type=click.Path())
+def run(FILE_IN, FILE_OUT):
+	tokenized_sentences = tokenize(FILE_IN)
+	out_file = open(FILE_OUT, "w")
+
+	for sentence in tokenized_sentences:
+		out_file.write(sentence)
