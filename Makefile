@@ -1,11 +1,13 @@
 .PHONY: all clean
 
 IRIS_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+SHERLOCK_URL = "http://www.gutenberg.org/cache/epub/1661/pg1661.txt"
 
-all: data/raw/iris.csv
+all: data/raw/sherlock.txt
 
 clean:
 	rm -f data/raw/*.csv
+	rm -f data/raw/*.txt
 
-data/raw/iris.csv:
-	python data/download.py $(IRIS_URL) $@
+data/raw/sherlock.txt:
+	python data/download.py $(SHERLOCK_URL) $@
