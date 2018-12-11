@@ -66,6 +66,33 @@ def tokens_to_binary(filename, one_hot_y=True):
         X[i] = np.where(X[i] > 0, 1, 0)
     return X, y
 
+def tokens_to_domain_assisted_bag(filename, one_hot_y=True):
+    file = open(filename, "r")
+    lines = file.readlines()
+
+    # Bag of words, Word at front, Word after a comma, Word at back, Sizing
+    X = np.empty((len(lines), 4 * TOKEN_COUNT + 150), dtype = int)
+    if one_hot_y:
+        y = np.empty((len(lines), NUM_CLASSES), dtype=int)   
+    else:
+        y = np.empty((len(lines), 1), dtype=int)
+
+    for i, line in enumerate(lines):
+        tokens, punct = eval(line)
+        X[1] = np.zeros((TOKEN_COUNT))
+        for token in tokens:
+            X[i][int(token)] += 1
+
+        if one_hot_y:
+            y[i] = np.zeros((NUM_CLASSES))
+            y[i][punct] = 1
+        else:
+            y[i] = punct
+
+    file.close()
+    return X, y
+
+
 def tokens_to_one_hot(filename, max_length, one_hot_y=True):
     # Memory error
     raise NotImplementedError
