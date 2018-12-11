@@ -1,31 +1,38 @@
 import click
 
+PERIOD = '.'
+QMARK = '?'
+EXPOINT = '!'
+SAVE = 's'
+ANSWERS = [PERIOD, QMARK, EXPOINT, SAVE]
 
-ANSWERS = ['.', '?', '!']
+
+PUNCT = {PERIOD: 0, QMARK: 1, EXPOINT: 2}
 
 
 def prettify(sentence):
     return ' '.join(sentence).replace(', ', ',')
 
 
-def get_sentences():
+def get_sentences(infile):
     lines = []
     sentences = []
-    with open('../data/interim/merged.txt') as file:
+    with open(infile) as file:
         lines = file.readlines()
 
-    for i, line in enumerate(lines):
-        sentence, punctuation = eval(line)
-        sentences.append(i, sentence, punctuation, None)
+    for line in lines:
+        i, sentence, correct = eval(line)
+        sentences.append((i, sentence, correct))
 
     return sentences
 
 
-def mark_answer(sentences, i, answer):
-    sentences[i][-1] = answer
+def mark_answer(answers, i, answer, correct):
+    record = (i, answer, correct)
+    answers.append(record)
 
 
-def prompt_for_answer(sentence):
+def get_answer(sentence):
     return easy_input(sentence, answer=ANSWERS)
 
 
@@ -40,7 +47,7 @@ def easy_input(question, answer=None, default=None):
 
     if answer is None :
         answer = ['yes', 'no']
-    else :
+    else:
         answer = [i.lower() for i in answer]
 
     # if <default> is None or <default> is not an expected answers
@@ -71,5 +78,29 @@ def easy_input(question, answer=None, default=None):
             print(" -- Please answer only with {0} or {1}.".format(", ".join(answer[:-1]), answer[-1]))
 
 
-if __name__ == '__main__' :
+def save(answers, outfile):
+    with open(outfile, 'w') as file:
+        for answer in answers:
+            file.write(str(answer))
+
+
+@click.command()
+@click.argument('infile', type=click.Path())
+@click.argument('outfile', type=click.Path())
+def run(infile, outfile):
+    answers = []
+    sentences = get_sentences(infile)
+    for i, sentence in sentences:
+        answer = None
+        while answer != SAVE:
+            answer = get_answer(sentence)
+            if answer not in PUNCT:
+                save(outfile)
+                return
+            mark_answer(answers, i, PUNCT[answer], sentences[i][2])
+
+
+
+if __name__ == '__main__':
+    run()
 
