@@ -98,7 +98,7 @@ def get_sentences(words):
 @click.argument('filename', type=click.Path())
 @click.argument('output', type=click.Path())
 def process_file(filename, output):
-    text = open(filename).read().replace('\n', ' ')
+    text = open(filename, encoding='utf8').read().replace('\n', ' ')
     sentences = get_sentences(text.split())
     with open(output, 'w') as file:
         for sentence in sentences:
