@@ -81,7 +81,7 @@ def easy_input(question, answer=None, default=None):
 def save(answers, outfile):
     with open(outfile, 'w') as file:
         for answer in answers:
-            file.write(str(answer))
+            file.write(str(answer) + '\n')
 
 
 @click.command()
@@ -90,14 +90,15 @@ def save(answers, outfile):
 def run(infile, outfile):
     answers = []
     sentences = get_sentences(infile)
-    for i, sentence in sentences:
-        answer = None
-        while answer != SAVE:
-            answer = get_answer(sentence)
-            if answer not in PUNCT:
-                save(outfile)
-                return
-            mark_answer(answers, i, PUNCT[answer], sentences[i][2])
+    for i, sentence, correct in sentences:
+        answer = get_answer(sentence)
+        if answer not in PUNCT:
+            save(answers, outfile)
+            return
+        mark_answer(answers, i, PUNCT[answer], correct)
+
+    print('Thank you. All done! Saving your answers')
+    save(answers, outfile)
 
 
 

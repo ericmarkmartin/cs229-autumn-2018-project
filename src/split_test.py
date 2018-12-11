@@ -8,13 +8,13 @@ import numpy as np
 @click.argument('infile', type=click.Path())
 @click.argument('outdir', type=click.Path())
 def run(infile, outdir):
-    train_dev_test_split
     sentences = []
     with open(infile) as file:
         lines = file.readlines()
         for i, line in enumerate(lines):
             sentence, punct = eval(line)
-            sentences.append((i, sentences, punct))
+            sentence = ' '.join(sentence).replace(' ,', ',')
+            sentences.append((i, sentence, punct))
 
     dev_size, test_size = 0.05, 0.05
 
@@ -25,11 +25,12 @@ def run(infile, outdir):
     _, test = train_test_split(rem, test_size=t2_size, random_state=random_state)
 
     r = np.arange(len(test))
+    np.random.shuffle(r)
     idx_splits = np.array_split(r, 50)
     for i, idx_split in enumerate(idx_splits):
         with open(outdir + str(i) + '.txt', 'w') as file:
             for idx in idx_split:
-                file.write(str(test[i]) + '\n')
+                file.write(str(test[idx]) + '\n')
 
 
 
