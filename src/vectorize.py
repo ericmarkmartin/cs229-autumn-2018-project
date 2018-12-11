@@ -40,7 +40,7 @@ def tokens_to_bag_of_words(filename, one_hot_y=True):
 
     for i, line in enumerate(lines):
         tokens, punct = eval(line)
-        X[1] = np.zeros((TOKEN_COUNT))
+        X[i] = np.zeros((TOKEN_COUNT))
         for token in tokens:
             X[i][int(token)] += 1
 
