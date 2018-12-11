@@ -83,7 +83,7 @@ data/interim/%.parsed.txt: data/raw/%.txt $(BOOK_TXT)
 	python data/process.py $< $@
 
 data/interim/merged.txt: $(PARSED_TXT)
-	sed -e 's/latin1/utf8/' $^ > $@
+	sed -e "s/latin1/utf8/" $^ > $@
 
 data/external/20k.txt:
 	python data/download.py $(DICTIONARY_URL) $@
