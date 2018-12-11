@@ -1,0 +1,96 @@
+Python 3.6.7 |Anaconda, Inc.| (default, Oct 23 2018, 14:01:38)
+[GCC 4.2.1 Compatible Clang 4.0.1 (tags/RELEASE_401/final)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from src import vectorizer
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ImportError: cannot import name 'vectorizer'
+>>> from src import vectorize
+from sklearn.niave>>> from sklearn.naive_bayes import MultinomialNB, BernoulliNB, GaussianNB
+>>> from sklearn.metrics import classification_report, confusion_matrix
+>>> target_names = ['PERIOD', 'QMARK', 'EXPOINT']
+>>> X, y = vectorize.tokens_to_bag_of_words('./data/processed/sherlock_tok.txt', one_hot_y=False)
+>>> clf_bern = BernoulliNB()
+>>> train, dev, test = vectorize.train_dev_test_split(X, y, 0.05, 0.05)
+>>> train_bern, dev_bern, test_bern = vectorize.train_dev_test_split(X_bern, y_bern, 0.05, 0.05)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'X_bern' is not defined
+>>> X_bern, y_bern = vectorize.tokens_to_binary('../data/processed/merged_tok.txt', one_hot_y=False)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/Users/ericmarkmartin/Development/Stanford/CS/229/cs229-autumn-2018-project/src/vectorize.py", line 64, in tokens_to_binary
+    X, y = tokens_to_bag_of_words(filename, one_hot_y=one_hot_y)
+  File "/Users/ericmarkmartin/Development/Stanford/CS/229/cs229-autumn-2018-project/src/vectorize.py", line 32, in tokens_to_bag_of_words
+    file = open(filename, "r")
+FileNotFoundError: [Errno 2] No such file or directory: '../data/processed/merged_tok.txt'
+>>> X_bern, y_bern = vectorize.tokens_to_binary('./data/processed/sherlock_tok.txt', one_hot_y=False)
+>>> train, dev, test = vectorize.train_dev_test_split(X, y, 0.05, 0.05)
+>>> train_bern, dev_bern, test_bern = vectorize.train_dev_test_split(X_bern, y_bern, 0.05, 0.05)
+>>> x_train, y_train = train
+>>> y_train = y_train.ravel()
+>>> clf_mult = MultinomialNB()
+>>> clf_mult.fit(x_train, y_train)
+MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+>>> x_train_bern, y_train_bern = train_bern
+>>> y_train_bern = y_train_bern.ravel()
+>>> clf_bern = BernoulliNB()
+>>> clf_bern.fit(x_train_bern, y_train_bern)
+BernoulliNB(alpha=1.0, binarize=0.0, class_prior=None, fit_prior=True)
+>>> x_dev_bern, y_dev_bern = dev_bern
+>>> y_pred_bern = clf_bern.predict(x_dev_bern)
+>>> print(classification_report(y_dev_bern, y_pred_bern, target_names=target_names))
+/Users/ericmarkmartin/.virtualenvs/cs229-autumn-2018-project-3R6jIYo2/lib/python3.6/site-packages/sklearn/metrics/classification.py:1143: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples.
+  'precision', 'predicted', average, warn_for)
+              precision    recall  f1-score   support
+
+      PERIOD       0.84      1.00      0.91       270
+       QMARK       0.00      0.00      0.00        29
+     EXPOINT       0.00      0.00      0.00        22
+
+   micro avg       0.84      0.84      0.84       321
+   macro avg       0.28      0.33      0.30       321
+weighted avg       0.71      0.84      0.77       321
+
+>>> x_train_bern
+array([[0, 0, 0, ..., 0, 0, 0],
+       [1, 1, 1, ..., 0, 0, 1],
+       [1, 0, 0, ..., 0, 0, 0],
+       ...,
+       [0, 1, 1, ..., 0, 1, 0],
+       [1, 0, 0, ..., 0, 1, 0],
+       [1, 1, 1, ..., 0, 1, 0]])
+>>> y_train_bern
+array([0, 0, 1, ..., 0, 0, 0])
+>>> np.bincount(y_train_bern)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'np' is not defined
+>>> import numpy as np
+>>> np.bincount(y_train_bern)
+array([4916,  589,  272])
+>>> x_train, y_train = train
+>>> y_train = y_train.ravel()
+>>> clf_mult = MultinomialNB()
+>>> clf_mult.fit(x_train, y_train)
+MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+>>> x_train
+array([[0, 0, 0, ..., 0, 0, 0],
+       [1, 1, 2, ..., 0, 0, 1],
+       [1, 0, 0, ..., 0, 0, 0],
+       ...,
+       [0, 1, 1, ..., 0, 1, 0],
+       [1, 0, 0, ..., 0, 1, 0],
+       [4, 2, 2, ..., 0, 4, 0]])
+>>> x_dev, y_dev = dev
+>>> y_pred = clf_mult.predict(x_dev)
+>>> print(classification_report(y_dev, y_pred, target_names=target_names))
+              precision    recall  f1-score   support
+
+      PERIOD       0.86      1.00      0.92       270
+       QMARK       0.50      0.03      0.06        29
+     EXPOINT       1.00      0.23      0.37        22
+
+   micro avg       0.86      0.86      0.86       321
+   macro avg       0.79      0.42      0.45       321
+weighted avg       0.83      0.86      0.81       321
