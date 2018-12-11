@@ -83,7 +83,11 @@ data/interim/%.parsed.txt: data/raw/%.txt $(BOOK_TXT)
 	python data/process.py $< $@
 
 data/interim/merged.txt: $(PARSED_TXT)
+<<<<<<< HEAD
 	cat $^ > $@
+=======
+	sed -e "s/latin1/utf8/" $^ > $@
+>>>>>>> 50235e0... Update makefile with double quotes for johnny boi
 
 data/external/20k.txt:
 	python data/download.py $(DICTIONARY_URL) $@
