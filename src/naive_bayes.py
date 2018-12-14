@@ -1,9 +1,10 @@
-import gensim
-import pandas as pd
-import re
-from gensim import parsing
-import gensim
-import numpy as np
+from sklearn.naive_bayes import BernoulliNB
+import vectorize
+from util import get_vectors, run_model
 
-def transform_text(text):
-    text =
+
+train, _, test = get_vectors(vectorize.tokens_to_binary)
+
+nb = BernoulliNB()
+
+run_model(nb, train, test)

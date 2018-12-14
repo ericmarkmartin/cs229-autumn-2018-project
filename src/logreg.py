@@ -1,24 +1,10 @@
+from sklearn.linear_model import LogisticRegression
 import vectorize
-import numpy as np
-import scipy as sp
-from sklearn import linear_model
-from sklearn.metrics import classification_report
+from util import get_vectors, run_model
 
 
-X, y = vectorize.tokens_to_binary("../data/processed/merged_tok.txt", one_hot_y=False)
-(X_train, y_train), (X_dev, y_dev), (X_test, y_test) = vectorize.train_dev_test_split(X, y, dev_size=0.05, test_size=0.05)
+train, _, test = get_vectors(vectorize.tokens_to_binary)
 
-print("Making logreg")
-logreg = linear_model.LogisticRegression(multi_class='multinomial', solver='sag')
-print("Fitting logreg")
-logreg.fit(X_train, np.ravel(y_train))
-print("Making predictions")
-predictions = logreg.predict(X_dev)
+lr = LogisticRegression(multi_class='multinomial', solver='sag')
 
-print(classification_report(y_dev, predictions, target_names=["PERIOD", "QMARK", "EXPOINT"]))
-print("Micro: " + str(metrics.precision_recall_fscore_support(y_dev, predictions, average='micro')))
-print("Macro: " + str(metrics.precision_recall_fscore_support(y_dev, predictions, average='macro')))
-print("Weighted: " + str(metrics.precision_recall_fscore_support(y_dev, predictions, average='weighted')))
-
-conf_matrix = metrics.confusion_matrix(y_dev, predictions) 
-print(conf_matrix)
+run_model(lr, train, test)
